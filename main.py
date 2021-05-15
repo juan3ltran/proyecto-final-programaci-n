@@ -31,6 +31,7 @@ def escribir(texto,fuente,color,pantalla,x,y):
 #fuentes
 f1=pygame.font.SysFont(None,100)
 f2=pygame.font.SysFont(None,70)
+f3=pygame.font.SysFont(None,40)
 #función menú
 def menu():
     x= 0
@@ -62,7 +63,7 @@ def menu():
         pygame.draw.rect(screen, (201,190,69),recuadro)
         escribir("Menú principal", f1, (255, 255 , 255), screen, 400, 100)
         
-        
+        #codigo botones
         if bot1.collidepoint((mx,my)):
             if event.type == MOUSEBUTTONDOWN:
              game()
@@ -94,14 +95,19 @@ def game():
     
     running=True
     while running: 
-        
+        #variables
+        tvida=str(vida)
+        #escenario        
         screen.blit(fondo,(0,0))
         screen.blit(roca,(-200,450))
         screen.blit(cañon,(0,500))
         pygame.draw.rect(screen, (0,0,0), pygame.Rect((1,2),(510,33)),border_radius=10)
         pygame.draw.rect(screen, (255,0,0), pygame.Rect((6,7),(500,23)),border_radius=10)
         pygame.draw.rect(screen, (0,255,0), pygame.Rect((6,7),(vida*5,23)),border_radius=10)
+        escribir(tvida,f3, (255, 255 , 255), screen, 235, 7)
         
+
+        #controles
         for event in pygame.event.get():         
             if event.type==pygame.QUIT:            
                 pygame.quit() 
