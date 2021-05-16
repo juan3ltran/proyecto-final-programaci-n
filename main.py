@@ -14,13 +14,17 @@ screen=pygame.display.set_mode((w, h))
 #cargar imagenes
 #imagenes menú
 fondomenu = pygame.transform.scale(pygame.image.load(("images/fondomenu.jpg")),(1280,720)).convert()
+#imagens dificultad
+fondodif=pygame.transform.scale(pygame.image.load(("images/fondodificultad.jpg")),(1280,720)).convert()
+palmera1=pygame.transform.scale(pygame.image.load("images/palmera1.png"),(500,700))
+bola=pygame.transform.scale(pygame.image.load("images/bola.png"),(150,150))
 #imagenes display juego
 fondo = pygame.image.load("images/fondo.png")
 roca = pygame.image.load("images/roca.png")
 cañon = pygame.transform.scale(pygame.image.load(("images/cañon.png")),(250,150))
 #variables
 vida=100
-
+difficult = 2
 
 #función para agregar texto dentro
 def escribir(texto,fuente,color,pantalla,x,y):
@@ -120,10 +124,63 @@ def game():
 
 #funcion de dificultades
 def dificultad():
+    global difficult
     running=True
-    while running:  
-    
-        screen.fill((0,0,0))        
+    while running: 
+        mx ,my = pygame.mouse.get_pos()
+
+
+        screen.blit(fondodif,(0,0)) 
+        screen.blit(palmera1,(0,0)) 
+        screen.blit(bola,(800,500))
+        #botones   
+        bot1 = pygame.Rect(515,200,250,100)
+        bot2 = pygame.Rect(515,400,250,100)
+        bot3 = pygame.Rect(515,600,250,100)
+        bot1b = pygame.Rect(511,196,258,108)
+        bot2b = pygame.Rect(511,396,258,108)
+        bot3b = pygame.Rect(511,596,258,108)
+        pygame.draw.rect(screen, (0,0,0),bot1b,border_radius=50)
+        pygame.draw.rect(screen, (0,0,0),bot2b,border_radius=50)
+        pygame.draw.rect(screen, (0,0,0),bot3b,border_radius=50)
+        pygame.draw.rect(screen, (178,130,91),bot1,border_radius=50)
+        pygame.draw.rect(screen, (178,130,91),bot2,border_radius=50)
+        pygame.draw.rect(screen, (178,130,91),bot3,border_radius=50)
+        escribir("Fácil", f2, (255, 255 , 255), screen, 583, 223)
+        escribir("Normal", f2, (255, 255 , 255), screen, 560, 423)
+        escribir("Dificil", f2, (255, 255 , 255), screen, 570, 623)
+        recuadrob= pygame.Rect(383,91,526,88)
+        recuadro= pygame.Rect(387,95,518,80)
+        pygame.draw.rect(screen, (0,0,0),recuadrob)
+        pygame.draw.rect(screen, (35,133,32),recuadro)
+        escribir("Selecciona una", f1, (255, 255 , 255), screen, 385, 100)       
+        
+        #cuadro de dificultad seleccionada
+        rect1 = pygame.Rect(950,96,250,250)
+        rect1b = pygame.Rect(946,92,258,258)
+        pygame.draw.rect(screen, (0,0,0),rect1b)
+        pygame.draw.rect(screen, (189,189,208),rect1)
+        if difficult == 1:
+            escribir("Fácil", f2, (255, 255 , 255), screen, 950, 96)
+        if difficult == 2:
+            escribir("Normal", f2, (255, 255 , 255), screen, 950, 96)
+        if difficult == 3:
+            escribir("Díficil", f2, (255, 255 , 255), screen, 950, 96)
+        
+
+        #código botones
+        if bot1.collidepoint((mx,my)):
+            if event.type == MOUSEBUTTONDOWN:
+             
+             difficult = 1
+        if bot2.collidepoint((mx,my)):
+            if event.type == MOUSEBUTTONDOWN:
+             
+             difficult = 2
+        if bot3.collidepoint((mx,my)):
+            if event.type == MOUSEBUTTONDOWN:
+            
+             difficult = 3
         for event in pygame.event.get():         
             if event.type==pygame.QUIT:            
                 pygame.quit() 
@@ -133,4 +190,7 @@ def dificultad():
                     running=False
         reloj.tick(60)
         pygame.display.update()
+
+    
+
 menu()
