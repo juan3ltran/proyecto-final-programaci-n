@@ -23,7 +23,7 @@ fondo = pygame.image.load("images/fondo.png")
 roca = pygame.image.load("images/roca.png")
 cañon = pygame.transform.scale(pygame.image.load(("images/cañon.png")),(250,150))
 #variables
-vida=100
+vida=70
 difficult = 2
 
 #función para agregar texto dentro
