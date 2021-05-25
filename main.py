@@ -194,3 +194,33 @@ def dificultad():
     
 
 menu()
+
+#preguntas sobre fisica:
+#1.1. La ciencia física es una ciencia fundamental, esto quiere decir que para explicarla:
+
+#A. No necesita de otras ciencias naturales. (Respuesta correcta)
+#B. Necesita y se fundamenta en otras ciencias naturales.
+#C. Sus conceptos deben ser particulares y limitados en el tiempo
+#D. Ninguna respuesta anterior es correcta.
+
+#2.1 En el diagrama de cuerpo libre:
+
+#A. Se deben tomar en cuenta las fuerzas internas.
+#B. No se deben tomar en cuenta las fuerzas internas.
+#C. Se deben tomar en cuenta las fuerzas externas e internas.
+#D. Ninguna respuesta anterior es correcta. (Respuesta correcta)
+
+#3.1.  Para poder utilizar la ecuación: torque neto igual al momento de inercia del cuerpo
+#por la aceleración angular, es necesario y suficiente que:
+
+#A. La masa del cuerpo sea constante.
+#B. El momento de inercia del cuerpo no sea constante.
+#C. El eje de rotación permanezca fijo. (El eje de rotacion permanezca fijo)
+#D. Ninguna respuesta anterior es correcta.
+
+#4.1.La energía potencial gravitatoria de una partícula se incrementa cuando:
+
+#A. Una fuerza externa no realiza trabajo activo.
+#B. Una fuerza externa realiza trabajo resistente.
+#C. El peso de la partícula realiza trabajo resistente. (Respuesta correcta)
+#D. Ninguna respuesta anterior es correcta.
