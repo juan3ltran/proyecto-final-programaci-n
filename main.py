@@ -1,6 +1,7 @@
 
 import pygame, sys
 from pygame.locals import *
+import math
 pygame.init()
 reloj = pygame.time.Clock()
 
@@ -21,7 +22,8 @@ bola=pygame.transform.scale(pygame.image.load("images/bola.png"),(150,150))
 #imagenes display juego
 fondo = pygame.image.load("images/fondo.png")
 roca = pygame.image.load("images/roca.png")
-cañon = pygame.transform.scale(pygame.image.load(("images/cañon.png")),(250,150))
+cañon = pygame.transform.scale(pygame.image.load(("images/base cañon.png")),(250,150))
+cañon2 = pygame.transform.scale(pygame.image.load(("images/cañon 2.png")),(250,150))
 #variables
 vida=70
 difficult = 2
@@ -99,12 +101,33 @@ def game():
     
     running=True
     while running: 
+        
+        mx, my = pygame.mouse.get_pos()
+        
         #variables
         tvida=str(vida)
         #escenario        
         screen.blit(fondo,(0,0))
         screen.blit(roca,(-200,450))
+        
+        
+        
+        #animación cañon
+        alpha =mx/my
+        angulo = math.atan(alpha)
+        print(angulo)
+        anim=pygame.transform.rotate(cañon2,angulo)
+        anim_rect=anim.get_rect()
+        anim_rect.center=(110,570)
+        screen.blit(anim,anim_rect)
         screen.blit(cañon,(0,500))
+
+        
+
+
+
+
+
         pygame.draw.rect(screen, (0,0,0), pygame.Rect((1,2),(510,33)),border_radius=10)
         pygame.draw.rect(screen, (255,0,0), pygame.Rect((6,7),(500,23)),border_radius=10)
         pygame.draw.rect(screen, (0,255,0), pygame.Rect((6,7),(vida*5,23)),border_radius=10)
