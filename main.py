@@ -71,9 +71,15 @@ def menu():
         
         #codigo botones
         if bot1.collidepoint((mx,my)):
+            pygame.draw.rect(screen, (255,255,255),bot1b,border_radius=50)
+            pygame.draw.rect(screen, (90,207,66),bot1,border_radius=50)
+            escribir("Jugar", f2, (255, 255 , 255), screen, 572, 323)
             if event.type == MOUSEBUTTONDOWN:
              game()
         if bot2.collidepoint((mx,my)):
+            pygame.draw.rect(screen, (255,255,255),bot2b,border_radius=50)
+            pygame.draw.rect(screen, (90,207,66),bot2,border_radius=50)
+            escribir("Dificultad", f2, (255, 255 , 255), screen, 530, 523)
             if event.type == MOUSEBUTTONDOWN:
              dificultad()   
    
@@ -113,9 +119,11 @@ def game():
         
         
         #animación cañon
-        alpha =mx/my
-        angulo = math.atan(alpha)
-        print(angulo)
+        if mx!=110:
+            alpha =(570-my)/(mx-110)
+        angulo =(math.atan(alpha)*180/math.pi)-20
+        
+       
         anim=pygame.transform.rotate(cañon2,angulo)
         anim_rect=anim.get_rect()
         anim_rect.center=(110,570)
@@ -193,18 +201,28 @@ def dificultad():
 
         #código botones
         if bot1.collidepoint((mx,my)):
+            pygame.draw.rect(screen, (255,255,255),bot1b,border_radius=50)
+            pygame.draw.rect(screen, (178,130,91),bot1,border_radius=50)
+            escribir("Fácil", f2, (255, 255 , 255), screen, 583, 223)
             if event.type == MOUSEBUTTONDOWN:
              
              difficult = 1
         if bot2.collidepoint((mx,my)):
+            pygame.draw.rect(screen, (255,255,255),bot2b,border_radius=50)
+            pygame.draw.rect(screen, (178,130,91),bot2,border_radius=50)
+            escribir("Normal", f2, (255, 255 , 255), screen, 560, 423)            
             if event.type == MOUSEBUTTONDOWN:
              
              difficult = 2
         if bot3.collidepoint((mx,my)):
+            pygame.draw.rect(screen, (255,255,255),bot3b,border_radius=50)
+            pygame.draw.rect(screen, (178,130,91),bot3,border_radius=50) 
+            escribir("Dificil", f2, (255, 255 , 255), screen, 570, 623)
             if event.type == MOUSEBUTTONDOWN:
             
              difficult = 3
-        for event in pygame.event.get():         
+        for event in pygame.event.get():
+             
             if event.type==pygame.QUIT:            
                 pygame.quit() 
                 exit(0) 
