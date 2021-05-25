@@ -2,6 +2,8 @@
 import pygame, sys
 from pygame.locals import *
 import math
+
+from pygame.time import Clock
 pygame.init()
 reloj = pygame.time.Clock()
 
@@ -24,10 +26,15 @@ fondo = pygame.image.load("images/fondo.png")
 roca = pygame.image.load("images/roca.png")
 cañon = pygame.transform.scale(pygame.image.load(("images/base cañon.png")),(250,150))
 cañon2 = pygame.transform.scale(pygame.image.load(("images/cañon 2.png")),(250,150))
+moneda_oro = pygame.transform.scale(pygame.image.load(("images/moneda de oro.png")),(25,25))
+cofre = pygame.transform.scale(pygame.image.load(("images/cofre.png")),(40,40))
+
+
 #variables
 vida=70
 difficult = 2
-
+oro = 0
+multiplo_de_diez = 10
 #función para agregar texto dentro
 def escribir(texto,fuente,color,pantalla,x,y):
     textobj = fuente.render(texto, 1,color)
@@ -104,19 +111,43 @@ def menu():
 
 #función juego
 def game():
-    
+    global multiplo_de_diez
+    global oro
     running=True
     while running: 
         
+        tiempo = int((pygame.time.get_ticks())/1000)
         mx, my = pygame.mouse.get_pos()
+        
+        #contador de oro
+        if tiempo == multiplo_de_diez:
+            oro = oro + 10000
+            multiplo_de_diez = multiplo_de_diez + 10
+    
         
         #variables
         tvida=str(vida)
+        toro=str(oro)
+        
         #escenario        
         screen.blit(fondo,(0,0))
         screen.blit(roca,(-200,450))
+        screen.blit(moneda_oro,(30,50))
+        tienda1 = pygame.Rect(1100,10,150,50)
+        tienda2 = pygame.Rect(1096,6,158,58)     
+        pygame.draw.rect(screen, (255,233,0),tienda2,border_radius=50)
+        pygame.draw.rect(screen, (75,54,33),tienda1,border_radius=50)
+        screen.blit(cofre,(1155,15))
         
-        
+        #animacion boton de tienda
+
+        if tienda1.collidepoint((mx,my)):
+          pygame.draw.rect(screen, (255,233,0),tienda2,border_radius=50)
+          pygame.draw.rect(screen, (238,208,157),tienda1,border_radius=50)
+          screen.blit(cofre,(1155,15))
+          escribir("TIENDA", f3, (0, 0 , 0), screen, 1120, 70)
+          #if event.type == MOUSEBUTTONDOWN:
+
         
         #animación cañon
         if mx!=110:
@@ -135,12 +166,12 @@ def game():
 
 
 
-
         pygame.draw.rect(screen, (0,0,0), pygame.Rect((1,2),(510,33)),border_radius=10)
         pygame.draw.rect(screen, (255,0,0), pygame.Rect((6,7),(500,23)),border_radius=10)
         pygame.draw.rect(screen, (0,255,0), pygame.Rect((6,7),(vida*5,23)),border_radius=10)
-        escribir(tvida,f3, (255, 255 , 255), screen, 235, 7)
         
+        escribir(tvida,f3, (255, 255 , 255), screen, 235, 7)
+        escribir(toro,f3, (255, 255 , 255), screen, 65, 50)
 
         #controles
         for event in pygame.event.get():         
