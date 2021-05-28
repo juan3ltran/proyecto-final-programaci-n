@@ -296,3 +296,27 @@ menu()
 #B. Una fuerza externa realiza trabajo resistente.
 #C. El peso de la partícula realiza trabajo resistente. (Respuesta correcta)
 #D. Ninguna respuesta anterior es correcta.
+
+#5.1 El alcance de un tiro parabólico depende de:
+#A. velocidad inicial y ángulo de tiro
+#B. masa del cuerpo
+#C. fuerza aplicada
+#D. tiempo de vuelo
+
+#6.1 El trabajo se mide en:
+#A. Vatios
+#B. Amperios
+#C. Joules
+#D. m/s^2
+
+#7.1 El alcance máximo se obtiene usando un ángulo de:
+#A. para cualquier ángulo el alcance es igual
+#B. 30°
+#C. 75°
+#D. 45°
+
+#8.1 La segunda ley de Newton afirma que:
+#A. para cualquier acción hay una reacción equivalente
+#B. la suma de las fuerzas es proporcional al producto de las masas y la aceleración del sistema
+#C. la fuerza de gravedad es proporcional al cociente del producto de las masas y la constante de gravedad universal, sobre la distancia entre los cuerpos
+#D. un cuerpo que se encuentra en reposo o en movimiento rectilíneo uniforme sólo cambiará su estado si se le aplica una fuerza
