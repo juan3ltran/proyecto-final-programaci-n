@@ -1,12 +1,26 @@
 
 import pygame, sys
 from pygame.locals import *
-import math
+import math, random
 
 from pygame.time import Clock
 pygame.init()
 reloj = pygame.time.Clock()
+Negro= (0,0,0)
 
+#clases
+class Enemigos(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.transform.scale(pygame.image.load(("images/barco.png")),(120,120)).convert()
+        self.rect= self.image.get_rect()
+        self.rect.right= random.randrange(h)
+        self.rect.y = random.randint(300,540)
+        self.rect.x = 1100
+    def update(self):
+        self.rect.x -=3
+        if self.rect.right < 0:
+            self.rect.left =w
 
 #iniciar juego
 pygame.init()
@@ -29,12 +43,17 @@ cañon2 = pygame.transform.scale(pygame.image.load(("images/cañon 2.png")),(250
 moneda_oro = pygame.transform.scale(pygame.image.load(("images/moneda de oro.png")),(25,25))
 cofre = pygame.transform.scale(pygame.image.load(("images/cofre.png")),(40,40))
 
+#grupo sprites
+sprites = pygame.sprite.Group()
+enemigos= Enemigos()
+sprites.add(enemigos)
 
 #variables
 vida=70
 difficult = 2
 oro = 0
 multiplo_de_diez = 10
+
 #función para agregar texto dentro
 def escribir(texto,fuente,color,pantalla,x,y):
     textobj = fuente.render(texto, 1,color)
@@ -89,9 +108,6 @@ def menu():
             escribir("Dificultad", f2, (255, 255 , 255), screen, 530, 523)
             if event.type == MOUSEBUTTONDOWN:
              dificultad()   
-   
-
-
 
         for event in pygame.event.get():   
             if event.type==pygame.QUIT:            
@@ -105,8 +121,6 @@ def menu():
         pygame.display.update()
         reloj.tick(60)
 
-
-                    
 
 
 #función juego
@@ -161,17 +175,19 @@ def game():
         screen.blit(anim,anim_rect)
         screen.blit(cañon,(0,500))
 
-        
-
-
-
-
         pygame.draw.rect(screen, (0,0,0), pygame.Rect((1,2),(510,33)),border_radius=10)
         pygame.draw.rect(screen, (255,0,0), pygame.Rect((6,7),(500,23)),border_radius=10)
         pygame.draw.rect(screen, (0,255,0), pygame.Rect((6,7),(vida*5,23)),border_radius=10)
         
         escribir(tvida,f3, (255, 255 , 255), screen, 235, 7)
         escribir(toro,f3, (255, 255 , 255), screen, 65, 50)
+
+        
+        #usos de los sprites
+        sprites.update()
+        sprites.draw(screen)
+        pygame.display.flip()
+        
 
         #controles
         for event in pygame.event.get():         
