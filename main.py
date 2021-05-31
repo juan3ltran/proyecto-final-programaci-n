@@ -8,20 +8,6 @@ pygame.init()
 reloj = pygame.time.Clock()
 Negro= (0,0,0)
 
-#clases
-class Enemigos(pygame.sprite.Sprite):
-    def __init__(self):
-        super().__init__()
-        self.image = pygame.transform.scale(pygame.image.load(("images/barco.png")),(120,120)).convert()
-        self.rect= self.image.get_rect()
-        self.rect.right= random.randrange(h)
-        self.rect.y = random.randint(300,540)
-        self.rect.x = 1100
-    def update(self):
-        self.rect.x -=3
-        if self.rect.right < 0:
-            self.rect.left =w
-
 #iniciar juego
 pygame.init()
 pygame.display.set_caption("Proyecto final grupo 5")
@@ -31,7 +17,7 @@ screen=pygame.display.set_mode((w, h))
 #cargar imagenes
 #imagenes menú
 fondomenu = pygame.transform.scale(pygame.image.load(("images/fondomenu.jpg")),(1280,720)).convert()
-#imagens dificultad
+#imagenes dificultad
 fondodif=pygame.transform.scale(pygame.image.load(("images/fondodificultad.jpg")),(1280,720)).convert()
 palmera1=pygame.transform.scale(pygame.image.load("images/palmera1.png"),(500,700))
 bola=pygame.transform.scale(pygame.image.load("images/bola.png"),(150,150))
@@ -42,17 +28,30 @@ cañon = pygame.transform.scale(pygame.image.load(("images/base cañon.png")),(2
 cañon2 = pygame.transform.scale(pygame.image.load(("images/cañon 2.png")),(250,150))
 moneda_oro = pygame.transform.scale(pygame.image.load(("images/moneda de oro.png")),(25,25))
 cofre = pygame.transform.scale(pygame.image.load(("images/cofre.png")),(40,40))
+#imagenes derrota
+fondoderr=pygame.transform.scale(pygame.image.load(("images/fondoderrota.jpg")),(1280,720)).convert()
 
-#grupo sprites
-sprites = pygame.sprite.Group()
-enemigos= Enemigos()
-sprites.add(enemigos)
 
 #variables
 vida=70
 difficult = 2
 oro = 0
 multiplo_de_diez = 10
+
+#clases
+class Enemigos(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.transform.scale(pygame.image.load(("images/barco.png")),(120,120)).convert_alpha()
+        self.rect= self.image.get_rect()
+        self.rect.right= random.randrange(h)
+        self.rect.y = random.randint(300,540)
+        self.rect.x = 1100
+    def update(self):
+        self.rect.x -=3
+        if self.rect.right < 0:
+            self.rect.left = w
+            
 
 #función para agregar texto dentro
 def escribir(texto,fuente,color,pantalla,x,y):
@@ -125,8 +124,15 @@ def menu():
 
 #función juego
 def game():
+
+    #grupo sprites
+    sprites = pygame.sprite.Group()
+    enemigos= Enemigos()
+    sprites.add(enemigos)
+
     global multiplo_de_diez
     global oro
+    global vida
     running=True
     while running: 
         
@@ -145,6 +151,7 @@ def game():
         
         #escenario        
         screen.blit(fondo,(0,0))
+        sprites.draw(screen)
         screen.blit(roca,(-200,450))
         screen.blit(moneda_oro,(30,50))
         tienda1 = pygame.Rect(1100,10,150,50)
@@ -181,12 +188,19 @@ def game():
         
         escribir(tvida,f3, (255, 255 , 255), screen, 235, 7)
         escribir(toro,f3, (255, 255 , 255), screen, 65, 50)
-
         
+
+        if enemigos.rect.left <= 0:
+           vida = vida-10
+           sprites.remove(enemigos)
+           del enemigos
+           enemigos = Enemigos()
+           sprites.add(enemigos)
+           print("pájaro",enemigos.rect.y)
         #usos de los sprites
         sprites.update()
-        sprites.draw(screen)
         pygame.display.flip()
+        
         
 
         #controles
@@ -197,6 +211,12 @@ def game():
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     running=False
+        if vida <= 0:
+            screen.blit(fondoderr,(0,0))
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    running=True
+                    vida=70
         reloj.tick(60)
         pygame.display.update()
 
