@@ -1,5 +1,6 @@
 
 import pygame, sys
+from pygame.draw import circle
 from pygame.locals import *
 import math, random
 
@@ -28,6 +29,13 @@ cañon = pygame.transform.scale(pygame.image.load(("images/base cañon.png")),(2
 cañon2 = pygame.transform.scale(pygame.image.load(("images/cañon 2.png")),(250,150))
 moneda_oro = pygame.transform.scale(pygame.image.load(("images/moneda de oro.png")),(25,25))
 cofre = pygame.transform.scale(pygame.image.load(("images/cofre.png")),(40,40))
+#imagenes tienda
+fondo_tienda = pygame.transform.scale(pygame.image.load(("images/paredmadera.png")),(700,700))
+pocion = pygame.transform.scale(pygame.image.load(("images/Aumento_Glacial_runa.png")),(50,50))
+vidaimagen1 = pygame.transform.scale(pygame.image.load(("images/vida.png")),(50,50))
+imagendaño = pygame.transform.scale(pygame.image.load(("images/daño.png")),(50,50))
+tamañobala = pygame.transform.scale(pygame.image.load(("images/ult.png")),(50,50))
+pocion50 = pygame.transform.scale(pygame.image.load(("images/pocion50.png")),(50,50))
 #imagenes derrota
 fondoderr=pygame.transform.scale(pygame.image.load(("images/fondoderrota.jpg")),(1280,720)).convert()
 
@@ -37,6 +45,7 @@ vida=70
 difficult = 2
 oro = 0
 multiplo_de_diez = 10
+escudo = 0
 
 #clases
 class Enemigos(pygame.sprite.Sprite):
@@ -161,14 +170,17 @@ def game():
         screen.blit(cofre,(1155,15))
         
         #animacion boton de tienda
-
+        
         if tienda1.collidepoint((mx,my)):
           pygame.draw.rect(screen, (255,233,0),tienda2,border_radius=50)
           pygame.draw.rect(screen, (238,208,157),tienda1,border_radius=50)
           screen.blit(cofre,(1155,15))
           escribir("TIENDA", f3, (0, 0 , 0), screen, 1120, 70)
-          #if event.type == MOUSEBUTTONDOWN:
+          if event.type == MOUSEBUTTONDOWN:
+              tienda()
+              
 
+        
         
         #animación cañon
         if mx!=110:
@@ -299,7 +311,65 @@ def dificultad():
         reloj.tick(60)
         pygame.display.update()
 
+def tienda():
+    fosforo=True 
     
+    
+    while fosforo:
+        mx ,my = pygame.mouse.get_pos()
+        
+        screen.blit(fondo_tienda,(330,10))
+        
+
+        bbb1=circle(screen,(255,255,255),(575,125),25)
+        bbb2=circle(screen,(255,255,255),(575,490),25)
+        
+        screen.blit(tamañobala,(550,590))
+        screen.blit(imagendaño,(550,470))
+        screen.blit(vidaimagen1,(550,300))
+        screen.blit(pocion,(550,100))
+        screen.blit(pocion50,(550,210))
+       
+        escribir("MEJORAS DE VIDA:", f3, (0, 0 , 0), screen, 550, 60)
+        escribir("MEJORAS DE ATAQUE:", f3, (0, 0 , 0), screen, 550, 400)
+        escribir("Mejora de escudo", f3, (0, 0 , 0), screen, 620, 110)
+        escribir("Curación (+25)", f3, (0, 0 , 0), screen, 620, 310)
+        escribir("Mejora de daño", f3, (0, 0 , 0), screen, 620, 480)
+        escribir("Tamaño de bala", f3, (0, 0 , 0), screen, 620, 600)
+        escribir("Poción (+50)", f3, (0, 0 , 0), screen, 620, 210)
+        
+        #if vidaimagen1.collidepoint((mx,my)):
+          #if event.type == MOUSEBUTTONDOWN:
+
+        #if tamañobala.collidepoint((mx,my)):
+          #if event.type == MOUSEBUTTONDOWN:  
+
+        #if pocion50.collidepoint((mx,my)):
+          #if event.type == MOUSEBUTTONDOWN:  
+
+        if bbb1.collidepoint((mx,my)):
+          circle(screen,(155,155,155),(575,125),25)
+          screen.blit(pocion,(550,100))
+          #if event.type == MOUSEBUTTONDOWN:
+
+        if bbb2.collidepoint((mx,my)):
+          circle(screen,(155,155,155),(575,490),25)
+          screen.blit(imagendaño,(550,470))
+          #if event.type == MOUSEBUTTONDOWN:
+        
+        for event in pygame.event.get():
+             
+           if event.type==pygame.QUIT:            
+               pygame.quit() 
+               exit(0) 
+
+           if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                  fosforo=False
+        
+        print(mx,my)
+        reloj.tick(60)
+        pygame.display.update()
 
 menu()
 
