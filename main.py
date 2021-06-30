@@ -1,5 +1,6 @@
 
 import pygame, sys
+from pygame import color
 from pygame.draw import circle
 from pygame.locals import *
 import math, random
@@ -38,10 +39,11 @@ tamañobala = pygame.transform.scale(pygame.image.load(("images/ult.png")),(50,5
 pocion50 = pygame.transform.scale(pygame.image.load(("images/pocion50.png")),(50,50))
 #imagenes derrota
 fondoderr=pygame.transform.scale(pygame.image.load(("images/fondoderrota.jpg")),(1280,720)).convert()
+botonr = pygame.transform.scale(pygame.image.load(("images/botr.png")),(100,100))
 
 
 #variables
-vida=70
+vida=10
 difficult = 2
 oro = 0
 multiplo_de_diez = 10
@@ -224,13 +226,42 @@ def game():
                 if event.key == K_ESCAPE:
                     running=False
         if vida <= 0:
-            screen.blit(fondoderr,(0,0))
-            if event.type == KEYDOWN:
-                if event.key == K_ESCAPE:
-                    running=True
-                    vida=70
+            reinicio()
         reloj.tick(60)
         pygame.display.update()
+
+#función de reinicio       
+def reinicio():
+    global vida
+    global oro
+    running=True
+    while running:
+        mx, my = pygame.mouse.get_pos()
+        screen.blit(fondoderr,(0,0))
+        botrb=circle(screen,(255,233,0),(w/2,(h/2)+100),65)
+        botr=circle(screen,(75,54,33),(w/2,(h/2)+100),60)
+        screen.blit(botonr,((w/2)-50,(h/2)+50))
+        if botr.collidepoint((mx,my)):
+          botrb=circle(screen,(255,233,0),(w/2,(h/2)+100),65)
+          botr=circle(screen,(238,208,157),(w/2,(h/2)+100),60)
+          screen.blit(botonr,((w/2)-50,(h/2)+50))
+          if event.type == MOUSEBUTTONDOWN:
+             vida=100
+             oro=0
+             running = False
+             game()              
+        
+
+        for event in pygame.event.get():         
+            if event.type==pygame.QUIT:            
+                pygame.quit() 
+                exit(0) 
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    running=False
+        reloj.tick(60)
+        pygame.display.update()
+
 
 #funcion de dificultades
 def dificultad():
