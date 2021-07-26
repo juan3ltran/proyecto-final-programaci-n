@@ -4,7 +4,6 @@ from pygame import color
 from pygame.draw import circle
 from pygame.locals import *
 import math, random
-
 from pygame.time import Clock
 pygame.init()
 reloj = pygame.time.Clock()
@@ -49,6 +48,7 @@ oro = 0
 multiplo_de_diez = 10
 escudo = 0
 
+
 #clases
 class Enemigos(pygame.sprite.Sprite):
     def __init__(self):
@@ -62,7 +62,59 @@ class Enemigos(pygame.sprite.Sprite):
         self.rect.x -=3
         if self.rect.right < 0:
             self.rect.left = w
-            
+
+class bala(object):
+    def __init__(self, x, y, radio, color):
+        self.x=x
+        self.y=y
+        self.radio=radio
+        self.color=color
+    def draw(self,screen):
+        pygame.draw.circle(screen,(0,0,0),(self.x,self.y),self.radio)
+        pygame.draw.circle(screen,self.color,(self.x,self.y),self.radio-1)
+
+    def balatray(startx, starty, power, ang, tiempo):
+        angle = ang
+        velx = math.cos(angle) * power
+        vely = math.sin(angle) * power
+
+        distX = velx * tiempo
+        distY = (vely *tiempo) + ((-4.9 * (tiempo ** 2)) / 2)
+
+        newx = round(distX + startx)
+        newy = round(starty - distY)
+        return(newx,newy)
+
+#variables bala
+cañonx=110
+cañony=570
+balatest=bala(cañonx, cañony, 10, (130,130,130))    
+bx=0
+by=0
+tiempob=0
+power=0   
+angle= 0
+shoot=False
+
+#funcion anglo
+def findAngle(pos):
+    sX = balatest.x
+    sY = balatest.y
+    try:
+        angle = math.atan((sY - pos[1]) / (sX - pos[0]))
+    except:
+        angle = math.pi / 2
+
+    if pos[1] < sY and pos[0] > sX:
+        angle = abs(angle)
+    elif pos[1] < sY and pos[0] < sX:
+        angle = math.pi - angle
+    elif pos[1] > sY and pos[0] < sX:
+        angle = math.pi + abs(angle)
+    elif pos[1] > sY and pos[0] > sX:
+        angle = (math.pi * 2) - angle
+
+    return angle
 
 #función para agregar texto dentro
 def escribir(texto,fuente,color,pantalla,x,y):
@@ -140,10 +192,17 @@ def game():
     sprites = pygame.sprite.Group()
     enemigos= Enemigos()
     sprites.add(enemigos)
+    
 
     global multiplo_de_diez
     global oro
     global vida
+    global shoot
+    global bx
+    global by
+    global power
+    global angle
+    global tiempob
     running=True
     while running: 
         
@@ -182,7 +241,12 @@ def game():
               tienda()
               
 
-        
+        #balas 
+        balatest.draw(screen)
+        line=[(balatest.x,balatest.y),(mx,my)]
+
+
+        pygame.draw.line(screen, (0,0,0), line[0], line[1])
         
         #animación cañon
         if mx>110:
@@ -216,9 +280,30 @@ def game():
         pygame.display.flip()
         
         
-
+        #bala
+        if shoot:
+            if balatest.y<h-balatest.radio:
+                tiempob+=0.5                
+                po = bala.balatray(bx, by, power, angle, tiempob)
+                balatest.x= po[0]
+                balatest.y= po[1]
+            else:
+                shoot=False
+                balatest.x=cañonx 
+                balatest.y=cañony
+            
         #controles
-        for event in pygame.event.get():         
+        for event in pygame.event.get(): 
+            if event.type == MOUSEBUTTONDOWN:
+                if shoot == False:
+                    shoot=True  
+                    by=balatest.y
+                    bx=balatest.x
+                    tiempob=0
+                    power= math.sqrt((line[1][1]-line[0][1])**2+(line[1][0]-line[0][0])**2)/8
+                    angle =findAngle((mx,my))
+                    
+
             if event.type==pygame.QUIT:            
                 pygame.quit() 
                 exit(0) 
@@ -227,6 +312,10 @@ def game():
                     running=False
         if vida <= 0:
             reinicio()
+
+
+
+        print(mx,my)
         reloj.tick(60)
         pygame.display.update()
 
