@@ -185,7 +185,7 @@ def game():
         
         
         #animación cañon
-        if mx!=110:
+        if mx>110:
             alpha =(570-my)/(mx-110)
         angulo =(math.atan(alpha)*180/math.pi)-20
         
