@@ -486,8 +486,10 @@ def tienda():
            
 
         if bbb5.collidepoint((mx,my)):
-           if event.type == MOUSEBUTTONDOWN:
-               balatest=bala(cañonx, cañony, 30, (130,130,130))
+           if oro >= 1000:
+               if event.type == MOUSEBUTTONDOWN:
+                  balatest=bala(cañonx, cañony, 30, (130,130,130))
+                  oro = oro-1000
 
           
 
