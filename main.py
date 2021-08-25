@@ -30,6 +30,7 @@ roca = pygame.image.load("images/roca.png")
 cañon = pygame.transform.scale(pygame.image.load(("images/base cañon.png")),(250,150))
 cañon2 = pygame.transform.scale(pygame.image.load(("images/cañon 2.png")),(250,150))
 moneda_oro = pygame.transform.scale(pygame.image.load(("images/moneda de oro.png")),(25,25))
+escudo222 = pygame.transform.scale(pygame.image.load(("images/escudo.png")),(40,40))
 cofre = pygame.transform.scale(pygame.image.load(("images/cofre.png")),(40,40))
 #imagenes tienda
 fondo_tienda = pygame.transform.scale(pygame.image.load(("images/paredmadera.png")),(700,700))
@@ -38,6 +39,7 @@ vidaimagen1 = pygame.transform.scale(pygame.image.load(("images/vida.png")),(50,
 imagendaño = pygame.transform.scale(pygame.image.load(("images/daño.png")),(50,50))
 tamañobala = pygame.transform.scale(pygame.image.load(("images/ult.png")),(50,50))
 pocion50 = pygame.transform.scale(pygame.image.load(("images/pocion50.png")),(50,50))
+fondo_preguntas = pygame.image.load("images/fondo preguntas.jpg")
 #imagenes derrota
 fondoderr=pygame.transform.scale(pygame.image.load(("images/fondoderrota.jpg")),(1280,720)).convert()
 botonr = pygame.transform.scale(pygame.image.load(("images/botr.png")),(100,100))
@@ -52,8 +54,9 @@ vida=100
 oro = 0
 puntuación=0
 multiplo_de_diez = 10
+multiplo_de_diez2 = 13
 escudo = 0
-
+fuente = pygame.font.SysFont("Constantia",17)
 
 #clases
 class Enemigos(pygame.sprite.Sprite):
@@ -102,6 +105,7 @@ tiempob=0
 power=0   
 angle= 0
 shoot=False
+
 
 #funcion anglo
 def findAngle(pos):
@@ -205,7 +209,8 @@ def game():
     enemigos2=Enemigos()
     sprites.add(enemigos2)
 
-
+    global balatest
+    global bola
     global multiplo_de_diez
     global oro
     global vida
@@ -217,6 +222,9 @@ def game():
     global power
     global angle
     global tiempob
+    global multiplo_de_diez2
+    
+
     running=True
     while running: 
         
@@ -225,8 +233,8 @@ def game():
         
         #contador
         if tiempo == multiplo_de_diez:
-            oro = oro + 10000
-            multiplo_de_diez = multiplo_de_diez + 10
+            oro = oro + 200
+            multiplo_de_diez = multiplo_de_diez + 2
         if difficult==1:
          puntuación=10*tiempo
         if difficult==2:
@@ -239,6 +247,7 @@ def game():
         tvida=str(vida)
         toro=str(oro)
         tpuntuación=str(puntuación)
+        tescudo=str(escudo)
         #escenario        
         screen.blit(fondo,(0,0))
         sprites.draw(screen)
@@ -249,6 +258,7 @@ def game():
         pygame.draw.rect(screen, (255,233,0),tienda2,border_radius=50)
         pygame.draw.rect(screen, (75,54,33),tienda1,border_radius=50)
         screen.blit(cofre,(1155,15))
+        screen.blit(escudo222,(230,45))
         
         #animacion boton de tienda
         
@@ -259,7 +269,7 @@ def game():
           escribir("TIENDA", f3, (0, 0 , 0), screen, 1120, 70)
           if event.type == MOUSEBUTTONDOWN:
               tienda()
-              
+              escribir(tescudo,f3, (255, 255 , 255), screen, 266, 50)
 
         #balas 
         balatest.draw(screen)
@@ -288,7 +298,7 @@ def game():
         escribir(toro,f3, (255, 255 , 255), screen, 65, 50)
         escribir(tpuntuación,f3, (0,0,0), screen, 125, 85)
         escribir("Puntaje:",f3, (0,0,0), screen, 10, 85)
-    
+        escribir(tescudo,f3, (255, 255 , 255), screen, 266, 50)
         
         if enemigos.rect.left <= 0:
            vida = vida-10
@@ -397,6 +407,15 @@ def game():
 
 
 
+        #generacion de preguntas
+        tiempomonda = int((pygame.time.get_ticks())/1000)
+        if tiempomonda == multiplo_de_diez2:
+            preguntas ()
+            multiplo_de_diez2 = multiplo_de_diez2 + 10
+            
+            
+
+
         #usos de los sprites
         sprites.update()
         pygame.display.flip()
@@ -494,6 +513,8 @@ def game():
 def reinicio():
     global vida
     global oro
+    global escudo
+    global puntuación
     running=True
     while running:
         mx, my = pygame.mouse.get_pos()
@@ -508,6 +529,8 @@ def reinicio():
           if event.type == MOUSEBUTTONDOWN:
              vida=100
              oro=0
+             escudo = 0
+             puntuación = 0
              running = False
              game()              
         
@@ -604,7 +627,12 @@ def dificultad():
 def tienda():
     fosforo=True 
     
-    
+    global balatest
+    global escudo
+    global vida
+    global bola
+    global oro
+
     while fosforo:
         mx ,my = pygame.mouse.get_pos()
         
@@ -613,6 +641,9 @@ def tienda():
 
         bbb1=circle(screen,(255,255,255),(575,125),25)
         bbb2=circle(screen,(255,255,255),(575,490),25)
+        bbb3=circle(screen,(255,255,255),(580,330),15)
+        bbb4=circle(screen,(255,255,255),(580,230),15)
+        bbb5=circle(screen,(255,255,255),(580,610),15)
         
         screen.blit(tamañobala,(550,590))
         screen.blit(imagendaño,(550,470))
@@ -623,29 +654,49 @@ def tienda():
         escribir("MEJORAS DE VIDA:", f3, (0, 0 , 0), screen, 550, 60)
         escribir("MEJORAS DE ATAQUE:", f3, (0, 0 , 0), screen, 550, 400)
         escribir("Mejora de escudo", f3, (0, 0 , 0), screen, 620, 110)
-        escribir("Curación (+25)", f3, (0, 0 , 0), screen, 620, 310)
+        escribir("Curación de vida pequeña", f3, (0, 0 , 0), screen, 620, 310)
+        escribir("500 de oro", f3, (0, 0 , 0), screen, 620, 140)
+        escribir("1000 de oro", f3, (0, 0 , 0), screen, 620, 240)
+        escribir("500 de oro", f3, (0, 0 , 0), screen, 620, 340)
+        escribir("500 de oro", f3, (0, 0 , 0), screen, 620, 640)
+        escribir("500 de oro", f3, (0, 0 , 0), screen, 620, 520)
         escribir("Mejora de daño", f3, (0, 0 , 0), screen, 620, 480)
         escribir("Tamaño de bala", f3, (0, 0 , 0), screen, 620, 600)
-        escribir("Poción (+50)", f3, (0, 0 , 0), screen, 620, 210)
+        escribir("Poción de vida grande", f3, (0, 0 , 0), screen, 620, 210)
         
-        #if vidaimagen1.collidepoint((mx,my)):
-          #if event.type == MOUSEBUTTONDOWN:
+        if bbb3.collidepoint((mx,my)):
+            if oro >= 500 and vida <= 50:
+               if event.type == MOUSEBUTTONDOWN:
+                    vida=vida+10
+                    oro = oro-500  
+           
 
-        #if tamañobala.collidepoint((mx,my)):
-         #   if event.type == MOUSEBUTTONDOWN:
-          #      radiob+=2
-        #if pocion50.collidepoint((mx,my)):
-          #if event.type == MOUSEBUTTONDOWN:  
+        if bbb5.collidepoint((mx,my)):
+           if oro >= 500:
+               if event.type == MOUSEBUTTONDOWN:
+                    balatest=bala(cañonx, cañony, 30, (130,130,130))
+                    oro=oro-500
+
+          
+
+        if bbb4.collidepoint((mx,my)):
+           if oro >= 1000 and vida <= 20:
+               if event.type == MOUSEBUTTONDOWN:
+                  vida=vida+20 
+                  oro = oro-1000 
 
         if bbb1.collidepoint((mx,my)):
-          circle(screen,(155,155,155),(575,125),25)
-          screen.blit(pocion,(550,100))
-          #if event.type == MOUSEBUTTONDOWN:
+           circle(screen,(155,155,155),(575,125),25),screen.blit(pocion,(550,100))
+           if oro >= 500:
+                if event.type == MOUSEBUTTONDOWN:
+                   escudo=escudo+10
+                   tescudo=str(escudo)
+                   oro = oro-500
 
         if bbb2.collidepoint((mx,my)):
-          circle(screen,(155,155,155),(575,490),25)
-          screen.blit(imagendaño,(550,470))
-          #if event.type == MOUSEBUTTONDOWN:
+           circle(screen,(155,155,155),(575,490),25)
+           screen.blit(imagendaño,(550,470))
+           #if event.type == MOUSEBUTTONDOWN:
         
         for event in pygame.event.get():
              
@@ -657,9 +708,81 @@ def tienda():
                 if event.key == K_ESCAPE:
                   fosforo=False
         
+        #print(mx,my)
+        reloj.tick(60)
+        pygame.display.update()
+
+
+def preguntas():
+    global oro
+    mx ,my = pygame.mouse.get_pos()
+    pepino = True
+    pregunta = True
+    screen.blit(fondo_tienda,(330,10))
+    global multiplo_de_diez2
+    
+    bbb8=circle(screen,(255,255,255),(395,255),13)
+    bbb9=circle(screen,(255,255,255),(395,305),13)
+    bbb10=circle(screen,(255,255,255),(395,355),13)
+
+    while pepino:
+        mx ,my = pygame.mouse.get_pos()
+
+        #escenario 
+
+        lista_pregunt = [("La ciencia física es una ciencia fundamental, esto quiere decir que para explicarla:",["A. No necesita de otras ciencias naturales.",
+        "B. Necesita y se fundamenta en otras ciencias naturales.","C. Sus conceptos deben ser particulares y limitados en el tiempo"],
+        "A. No necesita de otras ciencias naturales."),("En el diagrama de cuerpo libre:",["A. Se deben tomar en cuenta las fuerzas internas.",
+        "B. No se deben tomar en cuenta las fuerzas internas.","C. Ninguna respuesta anterior es correcta. (Respuesta correcta)"],
+        "C. Ninguna respuesta anterior es correcta."),("La energía potencial gravitatoria de una partícula se incrementa cuando:",["A. Una fuerza externa no realiza trabajo activo.",
+        "B. Una fuerza externa realiza trabajo resistente.","C. El peso de la partícula realiza trabajo resistente."],
+        "C. El peso de la partícula realiza trabajo resistente.")]
+
+        if bbb8.collidepoint((mx,my)):
+           if event.type == MOUSEBUTTONDOWN:
+             circle(screen,(155,155,155),(395,255),13)
+             reinicio()
+    
+        if bbb9.collidepoint((mx,my)):
+           if event.type == MOUSEBUTTONDOWN:
+             circle(screen,(155,155,155),(395,305),13)
+             reinicio()
+
+        if bbb10.collidepoint((mx,my)):
+           if event.type == MOUSEBUTTONDOWN:
+             circle(screen,(155,155,155),(395,355),13)
+             pepino = False
+        
+        while pregunta:
+        
+          indice = random.randint(0, len(lista_pregunt)-1)
+
+          texto = fuente.render(lista_pregunt[indice][0],True,(0,0,0))
+          screen.blit(texto,(390,200))
+          
+          for i in range (0,3):
+               opciones = fuente.render(lista_pregunt[indice][1][i],True,(0,0,0))
+               screen.blit(opciones,(390,200+(50*(i+1))))
+          
+          pregunta = False
+
+        for event in pygame.event.get():
+             
+            if event.type==pygame.QUIT:            
+               pygame.quit() 
+               exit(0) 
+
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                  pepino=False
+        
+        
         print(mx,my)
         reloj.tick(60)
         pygame.display.update()
+
+
+
 
 menu()
 
