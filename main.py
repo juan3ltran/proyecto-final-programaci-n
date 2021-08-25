@@ -2,6 +2,7 @@
 import pygame, sys
 from pygame import color
 from pygame.draw import circle
+from pygame.image import save
 from pygame.locals import *
 import math, random
 from pygame.time import Clock
@@ -11,6 +12,7 @@ Negro= (0,0,0)
 
 #iniciar juego
 pygame.init()
+pygame.mixer.init()
 pygame.display.set_caption("Proyecto final grupo 5")
 w=1280
 h=720
@@ -29,7 +31,6 @@ cañon = pygame.transform.scale(pygame.image.load(("images/base cañon.png")),(2
 cañon2 = pygame.transform.scale(pygame.image.load(("images/cañon 2.png")),(250,150))
 moneda_oro = pygame.transform.scale(pygame.image.load(("images/moneda de oro.png")),(25,25))
 cofre = pygame.transform.scale(pygame.image.load(("images/cofre.png")),(40,40))
-escudo222 = pygame.transform.scale(pygame.image.load(("images/escudo.png")),(40,40))
 #imagenes tienda
 fondo_tienda = pygame.transform.scale(pygame.image.load(("images/paredmadera.png")),(700,700))
 pocion = pygame.transform.scale(pygame.image.load(("images/Aumento_Glacial_runa.png")),(50,50))
@@ -37,16 +38,19 @@ vidaimagen1 = pygame.transform.scale(pygame.image.load(("images/vida.png")),(50,
 imagendaño = pygame.transform.scale(pygame.image.load(("images/daño.png")),(50,50))
 tamañobala = pygame.transform.scale(pygame.image.load(("images/ult.png")),(50,50))
 pocion50 = pygame.transform.scale(pygame.image.load(("images/pocion50.png")),(50,50))
-
 #imagenes derrota
 fondoderr=pygame.transform.scale(pygame.image.load(("images/fondoderrota.jpg")),(1280,720)).convert()
 botonr = pygame.transform.scale(pygame.image.load(("images/botr.png")),(100,100))
 
+sound_canon = pygame.mixer.Sound("sound/canon.wav")
+sound_explosion = pygame.mixer.Sound("sound/explosion.wav")
+
 
 #variables
+difficult=2
 vida=100
-difficult = 2
 oro = 0
+puntuación=0
 multiplo_de_diez = 10
 escudo = 0
 
@@ -72,7 +76,7 @@ class bala(object):
         self.radio=radio
         self.color=color
     def draw(self,screen):
-        pygame.draw.circle(screen,(0,0,0),(self.x,self.y),self.radio)
+        pygame.draw.circle(screen,(200,0,0),(self.x,self.y),self.radio)
         pygame.draw.circle(screen,self.color,(self.x,self.y),self.radio-1)
 
     def balatray(startx, starty, power, ang, tiempo):
@@ -90,7 +94,8 @@ class bala(object):
 #variables bala
 cañonx=110
 cañony=570
-balatest=bala(cañonx, cañony, 10, (130,130,130))    
+radiob=12
+balatest=bala(cañonx, cañony, radiob, (0,0,0))
 bx=0
 by=0
 tiempob=0
@@ -192,14 +197,20 @@ def game():
 
     #grupo sprites
     sprites = pygame.sprite.Group()
+
     enemigos= Enemigos()
     sprites.add(enemigos)
-    
-    global balatest
-    global bola
+    enemigos1=Enemigos()
+    sprites.add(enemigos1)
+    enemigos2=Enemigos()
+    sprites.add(enemigos2)
+
+
     global multiplo_de_diez
     global oro
     global vida
+    global puntuación
+    global radiob
     global shoot
     global bx
     global by
@@ -211,18 +222,23 @@ def game():
         
         tiempo = int((pygame.time.get_ticks())/1000)
         mx, my = pygame.mouse.get_pos()
-        #print(tiempo)
-        #contador de oro
-        if tiempo == multiplo_de_diez:
-            oro = oro + 100
-            multiplo_de_diez = multiplo_de_diez + 5
-    
         
+        #contador
+        if tiempo == multiplo_de_diez:
+            oro = oro + 10000
+            multiplo_de_diez = multiplo_de_diez + 10
+        if difficult==1:
+         puntuación=10*tiempo
+        if difficult==2:
+         puntuación=15*tiempo
+        if difficult==3:
+         puntuación=20*tiempo
+        
+    
         #variables
         tvida=str(vida)
         toro=str(oro)
-        tescudo=str(escudo)
-        
+        tpuntuación=str(puntuación)
         #escenario        
         screen.blit(fondo,(0,0))
         sprites.draw(screen)
@@ -233,8 +249,7 @@ def game():
         pygame.draw.rect(screen, (255,233,0),tienda2,border_radius=50)
         pygame.draw.rect(screen, (75,54,33),tienda1,border_radius=50)
         screen.blit(cofre,(1155,15))
-        screen.blit(escudo222,(230,45))
-
+        
         #animacion boton de tienda
         
         if tienda1.collidepoint((mx,my)):
@@ -244,9 +259,7 @@ def game():
           escribir("TIENDA", f3, (0, 0 , 0), screen, 1120, 70)
           if event.type == MOUSEBUTTONDOWN:
               tienda()
-        
-        escribir(tescudo,f3, (255, 255 , 255), screen, 266, 50)
-                    
+              
 
         #balas 
         balatest.draw(screen)
@@ -273,8 +286,10 @@ def game():
         
         escribir(tvida,f3, (255, 255 , 255), screen, 235, 7)
         escribir(toro,f3, (255, 255 , 255), screen, 65, 50)
+        escribir(tpuntuación,f3, (0,0,0), screen, 125, 85)
+        escribir("Puntaje:",f3, (0,0,0), screen, 10, 85)
+    
         
-
         if enemigos.rect.left <= 0:
            vida = vida-10
            sprites.remove(enemigos)
@@ -282,6 +297,106 @@ def game():
            enemigos = Enemigos()
            sprites.add(enemigos)
            print("pájaro",enemigos.rect.y)
+
+        if enemigos1.rect.left <= 0:
+           vida = vida-10
+           sprites.remove(enemigos1)
+           del enemigos1
+           enemigos1 = Enemigos()
+           sprites.add(enemigos1)
+           print("pájaro",enemigos1.rect.y)
+
+        if enemigos2.rect.left <= 0:
+           vida = vida-10
+           sprites.remove(enemigos2)
+           del enemigos2
+           enemigos2 = Enemigos()
+           sprites.add(enemigos2)
+           print("pájaro",enemigos2.rect.y)
+        
+        if difficult==1:
+            enemigos.rect.x -= 3
+            enemigos1.rect.x-=5
+            if enemigos.rect.left <= 0:
+             vida = vida-15
+             sprites.remove(enemigos)
+             del enemigos
+             enemigos = Enemigos()
+             sprites.add(enemigos)
+             print("pájaro",enemigos.rect.y)
+
+            if enemigos1.rect.left <= 0:
+             vida = vida-12
+             sprites.remove(enemigos1)
+             del enemigos1
+             enemigos1 = Enemigos()
+             sprites.add(enemigos1)
+             print("pájaro",enemigos1.rect.y)
+
+            if enemigos2.rect.left <= 0:
+             vida = vida-10
+             sprites.remove(enemigos2)
+             del enemigos2
+             enemigos2 = Enemigos()
+             sprites.add(enemigos2)
+             print("pájaro",enemigos2.rect.y)
+
+        if difficult==2:
+            enemigos.rect.x -= 5
+            enemigos1.rect.x-=7
+            if enemigos.rect.left <= 0:
+             vida = vida-22
+             sprites.remove(enemigos)
+             del enemigos
+             enemigos = Enemigos()
+             sprites.add(enemigos)
+             print("pájaro",enemigos.rect.y)
+
+            if enemigos1.rect.left <= 0:
+             vida = vida-19
+             sprites.remove(enemigos1)
+             del enemigos1
+             enemigos1 = Enemigos()
+             sprites.add(enemigos1)
+             print("pájaro",enemigos1.rect.y)
+
+            if enemigos2.rect.left <= 0:
+             vida = vida-17
+             sprites.remove(enemigos2)
+             del enemigos2
+             enemigos2 = Enemigos()
+             sprites.add(enemigos2)
+             print("pájaro",enemigos2.rect.y)
+
+        if difficult==3:
+            enemigos.rect.x-= 8
+            enemigos1.rect.x-=10
+            if enemigos.rect.left <= 0:
+             vida = vida-25
+             sprites.remove(enemigos)
+             del enemigos
+             enemigos = Enemigos()
+             sprites.add(enemigos)
+             print("pájaro",enemigos.rect.y)
+
+            if enemigos1.rect.left <= 0:
+             vida = vida-22
+             sprites.remove(enemigos1)
+             del enemigos1
+             enemigos1 = Enemigos()
+             sprites.add(enemigos1)
+             print("pájaro",enemigos1.rect.y)
+
+            if enemigos2.rect.left <= 0:
+             vida = vida-20
+             sprites.remove(enemigos2)
+             del enemigos2
+             enemigos2 = Enemigos()
+             sprites.add(enemigos2)
+             print("pájaro",enemigos2.rect.y)
+
+
+
         #usos de los sprites
         sprites.update()
         pygame.display.flip()
@@ -290,7 +405,7 @@ def game():
         #bala
         if shoot:
             if balatest.y<h-balatest.radio:
-                tiempob+=0.5                
+                tiempob+=0.4
                 po = bala.balatray(bx, by, power, angle, tiempob)
                 balatest.x= po[0]
                 balatest.y= po[1]
@@ -298,39 +413,87 @@ def game():
                 shoot=False
                 balatest.x=cañonx 
                 balatest.y=cañony
+
+        # Colision bala - enemigo
+        if shoot==True:
+         if enemigos.rect.collidepoint((balatest.x, balatest.y)):
+             print("colision!")
+             pygame.mixer.Sound.play(sound_explosion)
+             sprites.remove(enemigos)
+             del enemigos
+             enemigos = Enemigos()
+             sprites.add(enemigos)
+             shoot = False
+             balatest.x=cañonx 
+             balatest.y=cañony
+
+         if enemigos1.rect.collidepoint((balatest.x, balatest.y)):
+             print("colision!")
+             sprites.remove(enemigos1)
+             del enemigos1
+             enemigos1 = Enemigos()
+             sprites.add(enemigos1)
+             shoot = False
+             balatest.x=cañonx
+             balatest.y=cañony
+        
+         if enemigos2.rect.collidepoint((balatest.x, balatest.y)):
+             print("colision!")
+             sprites.remove(enemigos2)
+             del enemigos2
+             enemigos2 = Enemigos()
+             sprites.add(enemigos2)
+             shoot = False
+             balatest.x=cañonx
+             balatest.y=cañony
+  
+
+        
+        
+        
+
+
+
             
         #controles
         for event in pygame.event.get(): 
             if event.type == MOUSEBUTTONDOWN:
                 if shoot == False:
+                    pygame.mixer.Sound.play(sound_canon)
                     shoot=True  
                     by=balatest.y
                     bx=balatest.x
                     tiempob=0
                     power= math.sqrt((line[1][1]-line[0][1])**2+(line[1][0]-line[0][0])**2)/8
                     angle =findAngle((mx,my))
-                    
+            if balatest.x > 1000 or balatest.x < 0:
+                balatest.x = cañonx
+                balatest.y = cañony
+            if balatest.y > 400:
+                balatest.x = cañonx
+                balatest.y = cañony
 
-            if event.type==pygame.QUIT:            
+            if event.type==pygame.QUIT:
                 pygame.quit() 
                 exit(0) 
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     running=False
         if vida <= 0:
+            print  (puntuación)
+        if vida <= 0:
+            puntuación=0
             reinicio()
+        
 
-        print(mx,my)
+
         reloj.tick(60)
         pygame.display.update()
-
-
 
 #función de reinicio       
 def reinicio():
     global vida
     global oro
-    global escudo
     running=True
     while running:
         mx, my = pygame.mouse.get_pos()
@@ -345,8 +508,6 @@ def reinicio():
           if event.type == MOUSEBUTTONDOWN:
              vida=100
              oro=0
-             escudo = 0
-             
              running = False
              game()              
         
@@ -406,7 +567,6 @@ def dificultad():
             escribir("Normal", f2, (255, 255 , 255), screen, 950, 96)
         if difficult == 3:
             escribir("Díficil", f2, (255, 255 , 255), screen, 950, 96)
-        
 
         #código botones
         if bot1.collidepoint((mx,my)):
@@ -414,24 +574,24 @@ def dificultad():
             pygame.draw.rect(screen, (178,130,91),bot1,border_radius=50)
             escribir("Fácil", f2, (255, 255 , 255), screen, 583, 223)
             if event.type == MOUSEBUTTONDOWN:
-             
              difficult = 1
+             
         if bot2.collidepoint((mx,my)):
             pygame.draw.rect(screen, (255,255,255),bot2b,border_radius=50)
             pygame.draw.rect(screen, (178,130,91),bot2,border_radius=50)
             escribir("Normal", f2, (255, 255 , 255), screen, 560, 423)            
             if event.type == MOUSEBUTTONDOWN:
-             
              difficult = 2
+             
         if bot3.collidepoint((mx,my)):
             pygame.draw.rect(screen, (255,255,255),bot3b,border_radius=50)
             pygame.draw.rect(screen, (178,130,91),bot3,border_radius=50) 
             escribir("Dificil", f2, (255, 255 , 255), screen, 570, 623)
             if event.type == MOUSEBUTTONDOWN:
-            
              difficult = 3
-        for event in pygame.event.get():
              
+        
+        for event in pygame.event.get():
             if event.type==pygame.QUIT:            
                 pygame.quit() 
                 exit(0) 
@@ -443,12 +603,7 @@ def dificultad():
 
 def tienda():
     fosforo=True 
-   
-    global balatest
-    global escudo
-    global vida
-    global bola
-    global oro
+    
     
     while fosforo:
         mx ,my = pygame.mouse.get_pos()
@@ -458,10 +613,7 @@ def tienda():
 
         bbb1=circle(screen,(255,255,255),(575,125),25)
         bbb2=circle(screen,(255,255,255),(575,490),25)
-        bbb3=circle(screen,(255,255,255),(580,330),15)
-        bbb4=circle(screen,(255,255,255),(580,230),15)
-        bbb5=circle(screen,(255,255,255),(580,610),15)
-
+        
         screen.blit(tamañobala,(550,590))
         screen.blit(imagendaño,(550,470))
         screen.blit(vidaimagen1,(550,300))
@@ -471,52 +623,29 @@ def tienda():
         escribir("MEJORAS DE VIDA:", f3, (0, 0 , 0), screen, 550, 60)
         escribir("MEJORAS DE ATAQUE:", f3, (0, 0 , 0), screen, 550, 400)
         escribir("Mejora de escudo", f3, (0, 0 , 0), screen, 620, 110)
-        escribir("500 de oro", f3, (0, 0 , 0), screen, 620, 140)
-        escribir("Curación de vida pequeño", f3, (0, 0 , 0), screen, 620, 310)
+        escribir("Curación (+25)", f3, (0, 0 , 0), screen, 620, 310)
         escribir("Mejora de daño", f3, (0, 0 , 0), screen, 620, 480)
         escribir("Tamaño de bala", f3, (0, 0 , 0), screen, 620, 600)
-        escribir("Poción de vida grande", f3, (0, 0 , 0), screen, 620, 210)
+        escribir("Poción (+50)", f3, (0, 0 , 0), screen, 620, 210)
         
-        
-        if bbb3.collidepoint((mx,my)):
-           if oro >= 500 and vida <= 50:
-               if event.type == MOUSEBUTTONDOWN:
-                  vida=vida+10
-                  oro = oro-500  
-           
+        #if vidaimagen1.collidepoint((mx,my)):
+          #if event.type == MOUSEBUTTONDOWN:
 
-        if bbb5.collidepoint((mx,my)):
-           if oro >= 1000:
-               if event.type == MOUSEBUTTONDOWN:
-                  balatest=bala(cañonx, cañony, 30, (130,130,130))
-                  oro = oro-1000
-
-          
-
-        if bbb4.collidepoint((mx,my)):
-           if oro >= 1000 and vida <= 20:
-               if event.type == MOUSEBUTTONDOWN:
-                  vida=vida+20 
-                  oro = oro-1000 
-               
+        #if tamañobala.collidepoint((mx,my)):
+         #   if event.type == MOUSEBUTTONDOWN:
+          #      radiob+=2
+        #if pocion50.collidepoint((mx,my)):
+          #if event.type == MOUSEBUTTONDOWN:  
 
         if bbb1.collidepoint((mx,my)):
-           circle(screen,(155,155,155),(575,125),25)
-           screen.blit(pocion,(550,100))
-           if oro >= 500:
-               if event.type == MOUSEBUTTONDOWN:
-                 escudo=escudo+10
-                 tescudo=str(escudo)
-                 oro = oro-1000
-                
-             
-              
-              
+          circle(screen,(155,155,155),(575,125),25)
+          screen.blit(pocion,(550,100))
+          #if event.type == MOUSEBUTTONDOWN:
 
         if bbb2.collidepoint((mx,my)):
-           circle(screen,(155,155,155),(575,490),25)
-           screen.blit(imagendaño,(550,470))
-           #if event.type == MOUSEBUTTONDOWN:
+          circle(screen,(155,155,155),(575,490),25)
+          screen.blit(imagendaño,(550,470))
+          #if event.type == MOUSEBUTTONDOWN:
         
         for event in pygame.event.get():
              
@@ -527,14 +656,10 @@ def tienda():
            if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                   fosforo=False
-                  
         
         print(mx,my)
         reloj.tick(60)
         pygame.display.update()
-    
-
-        
 
 menu()
 
