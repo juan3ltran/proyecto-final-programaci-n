@@ -415,7 +415,7 @@ def game():
         tiempomonda = int((pygame.time.get_ticks())/1000)
         if tiempomonda == multiplo_de_diez2:
             preguntas ()
-            multiplo_de_diez2 = multiplo_de_diez2 + 10
+            multiplo_de_diez2 = multiplo_de_diez2 + 15
             
             
 
@@ -766,7 +766,7 @@ def preguntas():
         lista_pregunt = [("La ciencia física es una ciencia fundamental, esto quiere decir que para explicarla:",["A. No necesita de otras ciencias naturales.",
         "B. Necesita y se fundamenta en otras ciencias naturales.","C. Sus conceptos deben ser particulares y limitados en el tiempo"],
         "A. No necesita de otras ciencias naturales."),("En el diagrama de cuerpo libre:",["A. Se deben tomar en cuenta las fuerzas internas.",
-        "B. No se deben tomar en cuenta las fuerzas internas.","C. Ninguna respuesta anterior es correcta. (Respuesta correcta)"],
+        "B. No se deben tomar en cuenta las fuerzas internas.","C. Ninguna respuesta anterior es correcta."],
         "C. Ninguna respuesta anterior es correcta."),("La energía potencial gravitatoria de una partícula se incrementa cuando:",["A. Una fuerza externa no realiza trabajo activo.",
         "B. Una fuerza externa realiza trabajo resistente.","C. El peso de la partícula realiza trabajo resistente."],
         "C. El peso de la partícula realiza trabajo resistente.")]
