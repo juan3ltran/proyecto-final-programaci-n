@@ -1,10 +1,12 @@
 
 import pygame, sys
 from pygame import color
+from pygame import time
 from pygame.draw import circle
 from pygame.image import save
 from pygame.locals import *
 import math, random
+from pygame.mixer import pause
 from pygame.time import Clock
 pygame.init()
 reloj = pygame.time.Clock()
@@ -104,6 +106,7 @@ by=0
 tiempob=0
 power=0   
 angle= 0
+tiempo=0
 shoot=False
 
 
@@ -223,6 +226,7 @@ def game():
     global angle
     global tiempob
     global multiplo_de_diez2
+    global tiempo
     
 
     running=True
@@ -306,7 +310,7 @@ def game():
            del enemigos
            enemigos = Enemigos()
            sprites.add(enemigos)
-           print("pájaro",enemigos.rect.y)
+        
 
         if enemigos1.rect.left <= 0:
            vida = vida-10
@@ -314,7 +318,7 @@ def game():
            del enemigos1
            enemigos1 = Enemigos()
            sprites.add(enemigos1)
-           print("pájaro",enemigos1.rect.y)
+          
 
         if enemigos2.rect.left <= 0:
            vida = vida-10
@@ -322,7 +326,7 @@ def game():
            del enemigos2
            enemigos2 = Enemigos()
            sprites.add(enemigos2)
-           print("pájaro",enemigos2.rect.y)
+           
         
         if difficult==1:
             enemigos.rect.x -= 3
@@ -333,7 +337,7 @@ def game():
              del enemigos
              enemigos = Enemigos()
              sprites.add(enemigos)
-             print("pájaro",enemigos.rect.y)
+            
 
             if enemigos1.rect.left <= 0:
              vida = vida-12
@@ -341,7 +345,7 @@ def game():
              del enemigos1
              enemigos1 = Enemigos()
              sprites.add(enemigos1)
-             print("pájaro",enemigos1.rect.y)
+            
 
             if enemigos2.rect.left <= 0:
              vida = vida-10
@@ -349,7 +353,7 @@ def game():
              del enemigos2
              enemigos2 = Enemigos()
              sprites.add(enemigos2)
-             print("pájaro",enemigos2.rect.y)
+          
 
         if difficult==2:
             enemigos.rect.x -= 5
@@ -360,7 +364,7 @@ def game():
              del enemigos
              enemigos = Enemigos()
              sprites.add(enemigos)
-             print("pájaro",enemigos.rect.y)
+           
 
             if enemigos1.rect.left <= 0:
              vida = vida-19
@@ -368,7 +372,7 @@ def game():
              del enemigos1
              enemigos1 = Enemigos()
              sprites.add(enemigos1)
-             print("pájaro",enemigos1.rect.y)
+             
 
             if enemigos2.rect.left <= 0:
              vida = vida-17
@@ -376,7 +380,7 @@ def game():
              del enemigos2
              enemigos2 = Enemigos()
              sprites.add(enemigos2)
-             print("pájaro",enemigos2.rect.y)
+             
 
         if difficult==3:
             enemigos.rect.x-= 8
@@ -387,7 +391,7 @@ def game():
              del enemigos
              enemigos = Enemigos()
              sprites.add(enemigos)
-             print("pájaro",enemigos.rect.y)
+             
 
             if enemigos1.rect.left <= 0:
              vida = vida-22
@@ -395,7 +399,7 @@ def game():
              del enemigos1
              enemigos1 = Enemigos()
              sprites.add(enemigos1)
-             print("pájaro",enemigos1.rect.y)
+             
 
             if enemigos2.rect.left <= 0:
              vida = vida-20
@@ -403,7 +407,7 @@ def game():
              del enemigos2
              enemigos2 = Enemigos()
              sprites.add(enemigos2)
-             print("pájaro",enemigos2.rect.y)
+             
 
 
 
@@ -436,7 +440,6 @@ def game():
         # Colision bala - enemigo
         if shoot==True:
          if enemigos.rect.collidepoint((balatest.x, balatest.y)):
-             print("colision!")
              pygame.mixer.Sound.play(sound_explosion)
              sprites.remove(enemigos)
              del enemigos
@@ -447,7 +450,6 @@ def game():
              balatest.y=cañony
 
          if enemigos1.rect.collidepoint((balatest.x, balatest.y)):
-             print("colision!")
              sprites.remove(enemigos1)
              del enemigos1
              enemigos1 = Enemigos()
@@ -457,7 +459,6 @@ def game():
              balatest.y=cañony
         
          if enemigos2.rect.collidepoint((balatest.x, balatest.y)):
-             print("colision!")
              sprites.remove(enemigos2)
              del enemigos2
              enemigos2 = Enemigos()
@@ -499,9 +500,6 @@ def game():
                 if event.key == K_ESCAPE:
                     running=False
         if vida <= 0:
-            print  (puntuación)
-        if vida <= 0:
-            puntuación=0
             reinicio()
         
 
@@ -511,14 +509,18 @@ def game():
 
 #función de reinicio       
 def reinicio():
+    global tiempo
     global vida
     global oro
     global escudo
     global puntuación
+    tpuntuación=str(puntuación)
     running=True
     while running:
         mx, my = pygame.mouse.get_pos()
         screen.blit(fondoderr,(0,0))
+        escribir("Su puntuación fue:",f3, (255,255,255), screen, w/2-250, (h/2)+200)
+        escribir(tpuntuación,f3, (255,255,255), screen, (w/2)+50, (h/2)+200)
         botrb=circle(screen,(255,233,0),(w/2,(h/2)+100),65)
         botr=circle(screen,(75,54,33),(w/2,(h/2)+100),60)
         screen.blit(botonr,((w/2)-50,(h/2)+50))
@@ -527,6 +529,7 @@ def reinicio():
           botr=circle(screen,(238,208,157),(w/2,(h/2)+100),60)
           screen.blit(botonr,((w/2)-50,(h/2)+50))
           if event.type == MOUSEBUTTONDOWN:
+             tiempo=0
              vida=100
              oro=0
              escudo = 0
@@ -549,6 +552,11 @@ def reinicio():
 #funcion de dificultades
 def dificultad():
     global difficult
+    global vida
+    global oro
+    global puntuación
+    global escudo
+    global tiempo
     running=True
     while running: 
         mx ,my = pygame.mouse.get_pos()
@@ -598,6 +606,14 @@ def dificultad():
             escribir("Fácil", f2, (255, 255 , 255), screen, 583, 223)
             if event.type == MOUSEBUTTONDOWN:
              difficult = 1
+             tiempo=0
+             vida=100
+             oro=0
+             escudo = 0
+             puntuación = 0
+             running = False
+             game()
+
              
         if bot2.collidepoint((mx,my)):
             pygame.draw.rect(screen, (255,255,255),bot2b,border_radius=50)
@@ -605,6 +621,14 @@ def dificultad():
             escribir("Normal", f2, (255, 255 , 255), screen, 560, 423)            
             if event.type == MOUSEBUTTONDOWN:
              difficult = 2
+             tiempo=0
+             vida=100
+             oro=0
+             escudo = 0
+             puntuación = 0
+             running = False
+             game()
+             
              
         if bot3.collidepoint((mx,my)):
             pygame.draw.rect(screen, (255,255,255),bot3b,border_radius=50)
@@ -612,6 +636,13 @@ def dificultad():
             escribir("Dificil", f2, (255, 255 , 255), screen, 570, 623)
             if event.type == MOUSEBUTTONDOWN:
              difficult = 3
+             tiempo=0
+             vida=100
+             oro=0
+             escudo = 0
+             puntuación = 0
+             running = False
+             game()
              
         
         for event in pygame.event.get():
@@ -715,10 +746,12 @@ def tienda():
 
 def preguntas():
     global oro
+    global vida
     mx ,my = pygame.mouse.get_pos()
     pepino = True
     pregunta = True
-    screen.blit(fondo_tienda,(330,10))
+    screen.blit(fondo_preguntas,(330,80))
+    escribir("¿Lograrás defender el puerto?", f3, (0,0,0), screen, 350, 90)
     global multiplo_de_diez2
     
     bbb8=circle(screen,(255,255,255),(395,255),13)
@@ -741,17 +774,21 @@ def preguntas():
         if bbb8.collidepoint((mx,my)):
            if event.type == MOUSEBUTTONDOWN:
              circle(screen,(155,155,155),(395,255),13)
-             reinicio()
+             vida-=25
+             pepino = False
     
         if bbb9.collidepoint((mx,my)):
            if event.type == MOUSEBUTTONDOWN:
              circle(screen,(155,155,155),(395,305),13)
-             reinicio()
+             vida-=25
+             pepino = False
 
         if bbb10.collidepoint((mx,my)):
            if event.type == MOUSEBUTTONDOWN:
              circle(screen,(155,155,155),(395,355),13)
+             oro+=250
              pepino = False
+
         
         while pregunta:
         
@@ -772,12 +809,7 @@ def preguntas():
                pygame.quit() 
                exit(0) 
 
-            if event.type == KEYDOWN:
-                if event.key == K_ESCAPE:
-                  pepino=False
         
-        
-        print(mx,my)
         reloj.tick(60)
         pygame.display.update()
 
